@@ -22,8 +22,8 @@ public class GreetingService {
 	public Message greet(Optional<String> user) {
 		String greeting = null;
 
-		if (user.isPresent()) {
-			greeting = this.greetings.get(user.get());
+		if (user.isPresent() && this.greetings.containsKey(user.get())) {
+			greeting = user.get() + ": " + this.greetings.get(user.get());
 		}
 		if (greeting == null) {
 			greeting = this.greetings.get(DEFAULT_USER);

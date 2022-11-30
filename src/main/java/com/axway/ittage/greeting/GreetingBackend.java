@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.Optional;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -18,9 +19,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
 
+import org.jboss.logging.Logger;
+
 @Path("/")
 @ApplicationScoped
 public class GreetingBackend {
+	
+	private static final Logger log = Logger.getLogger(GreetingBackend.class);	
 
 	@Inject
 	GreetingService greetingService;
@@ -37,8 +42,7 @@ public class GreetingBackend {
 	@Path("/greetings")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	// @RolesAllowed({ "greetings.set" })
-	@PermitAll
+	@RolesAllowed({ "greetings.set" })
 	public Message setMessage(@Context SecurityContext ctx, @Valid Message message) {
 		if (message == null || message.message() == null || message.message().isBlank())
 			throw new BadRequestException();
@@ -47,8 +51,7 @@ public class GreetingBackend {
 
 	@DELETE
 	@Path("/greetings")
-	// @RolesAllowed({ "greetings.set" })
-	@PermitAll
+	@RolesAllowed({ "greetings.set" })
 	public void resetMessage(@Context SecurityContext ctx) {
 		greetingService.reset(getUserName(ctx));
 	}
@@ -56,6 +59,12 @@ public class GreetingBackend {
 	private Optional<String> getUserName(SecurityContext ctx) {
 		Principal principal = ctx.getUserPrincipal();
 		Optional<String> user = (principal != null) ? Optional.of(principal.getName()) : Optional.empty();
+		
+		if (user.isPresent()) {
+			log.info("user: " + user.get());
+		} else {
+			log.info("user not specified");
+		}
 		return user;
 	}
 }
