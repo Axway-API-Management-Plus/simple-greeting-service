@@ -1,0 +1,194 @@
+{
+  "openapi": "3.0.0",
+  "x-stoplight": {
+    "id": "bt6usn9z8elwo"
+  },
+  "info": {
+    "title": "Greeting Service",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Axway GmbH",
+      "url": "https://axway.com"
+    },
+    "description": "API for demo purpose, provding a simple greeting service."
+  },
+  "servers": [
+    {
+      "url": "https://localhost:8443"
+    }
+  ],
+  "paths": {
+    "/greetings": {
+      "parameters": [],
+      "get": {
+        "summary": "Greetings",
+        "tags": [
+          "greetings"
+        ],
+        "responses": {
+          "200": {
+            "description": "Greeting generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                },
+                "examples": {
+                  "Simple Hello": {
+                    "value": {
+                      "message": "Hello",
+                      "timestamp": 1668031821752
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-greeting",
+        "description": "Retrieves a user specific greeting message. If no user is specified, the default message will be returned.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "user",
+            "description": "User identifier",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z_\\.\\-]+$",
+              "minLength": 1,
+              "maxLength": 20
+            }
+          }
+        ]
+      },
+      "post": {
+        "summary": "Set Greeting Message",
+        "operationId": "set-greetings",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "message": "string",
+                      "timestamp": 1668031821752
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request, if user or message is not specified."
+          }
+        },
+        "description": "Set a user specififc greeting message.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Message"
+              },
+              "examples": {
+                "Example": {
+                  "value": {
+                    "message": "string"
+                  }
+                }
+              }
+            }
+          },
+          "description": "New greeting message."
+        },
+        "tags": [
+          "greetings"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/user"
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete/Reset Greeting Message",
+        "operationId": "reset-greetings",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request, if user is not specified."
+          }
+        },
+        "description": "Deletes the user specific greeting message. If no user is specified, the default message will be reset to the inital greeting message.  ",
+        "tags": [
+          "greetings"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/user"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Message": {
+        "title": "Message",
+        "type": "object",
+        "description": "Greeting message from the backend.",
+        "x-examples": {
+          "Hello": {
+            "message": "Hello",
+            "timestamp": "1668031821752"
+          }
+        },
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Message",
+            "readOnly": true
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1668031821752,
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "description": "Timestampt the message was generated.",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "message"
+        ]
+      }
+    },
+    "securitySchemes": {},
+    "parameters": {
+      "user": {
+        "name": "user",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-z_\\.\\-]+$",
+          "minLength": 1,
+          "maxLength": 20
+        },
+        "description": "User identifier"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "greetings"
+    }
+  ]
+}
