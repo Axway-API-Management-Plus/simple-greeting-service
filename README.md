@@ -14,7 +14,9 @@ Returns the default greeting message.
 
 Example:
 ```
-$ curl -ks https://localhost:8443/greetings
+$ curl -ks https://localhost:8443/greetings \
+--cert src/certs/demo-backend-client.crt \
+--key  src/certs/demo-backend-client.key
 {"message":"Hello World!","timestamp":1670624571107}
 ```
 
@@ -24,7 +26,9 @@ If no user specific greeting message exists, the default message will be returne
 
 Example:
 ```
-$ curl -ks https://localhost:8443/greetings?user=bob
+$ curl -ks https://localhost:8443/greetings?user=bob \
+--cert src/certs/demo-backend-client.crt \
+--key  src/certs/demo-backend-client.key
 {"message":"Hello World!","timestamp":1670624642078}
 ```
 
@@ -34,6 +38,8 @@ Set a greeting message for the specified user.
 Example:
 ```
 $ curl -ks -X POST https://localhost:8443/greetings?user=bob \
+--cert src/certs/demo-backend-client.crt \
+--key  src/certs/demo-backend-client.key \
 -H "Content-Type: application/json" \
 -d '{"message": "Good Morning!"}'
 {"message":"bob: Good Morning!","timestamp":1670624792172}
@@ -44,12 +50,17 @@ Delete the greeting message of the specified user.
 
 Example:
 ```
-$ curl -ks -X DELETE https://localhost:8443/greetings?user=bob
+$ curl -ks -X DELETE https://localhost:8443/greetings?user=bob \
+--cert src/certs/demo-backend-client.crt \
+--key  src/certs/demo-backend-client.key
 ```
 
 ## Security
 
-__ATTENTION__: This version of has no activated security mechanisms.
+This version enforces mutual TLS.
+To access the service, a client certificate issued by `src/certs/demo-sub-ca.crt` is required.
+
+__ATTENTION:__ The access to the user specific messages is not restricted.
 
 ## Certificates
 

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.axway.demo</groupId>
 	<artifactId>greeting-backend</artifactId>
-	<version>0.1.0</version>
+	<version>0.2.0</version>
 
 	<name>Simple Greeting Service</name>
 	<description>Simple backend service; just for demonstration purpose.</description>
