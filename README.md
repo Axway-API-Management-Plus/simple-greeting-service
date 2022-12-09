@@ -12,11 +12,14 @@ It supports following methods (for details, see OpenAPI spec `src/openapi/greeti
 ### GET /greetings
 Returns the default greeting message.
 
+Required scopes: `greetings` or `greetings.set`
+
 Example:
 ```
 $ curl -ks https://localhost:8443/greetings \
---cert src/certs/demo-backend-client.crt \
---key  src/certs/demo-backend-client.key
+-H "Authorization: Bearer ...token..." \
+--cert src/certs/demo-apim-client.crt \
+--key  src/certs/demo-apim-client.key
 {"message":"Hello World!","timestamp":1670624571107}
 ```
 
@@ -24,22 +27,28 @@ $ curl -ks https://localhost:8443/greetings \
 Returns the greeting message of a user.
 If no user specific greeting message exists, the default message will be returned.
 
+Required scope: `greetings` or `greetings.set`
+
 Example:
 ```
 $ curl -ks https://localhost:8443/greetings?user=bob \
---cert src/certs/demo-backend-client.crt \
---key  src/certs/demo-backend-client.key
+-H "Authorization: Bearer ...token..." \
+--cert src/certs/demo-apim-client.crt \
+--key  src/certs/demo-apim-client.key
 {"message":"Hello World!","timestamp":1670624642078}
 ```
 
 ### POST /greetings?user={userid}
 Set a greeting message for the specified user.
 
+Required scope: `greetings.set`
+
 Example:
 ```
 $ curl -ks -X POST https://localhost:8443/greetings?user=bob \
---cert src/certs/demo-backend-client.crt \
---key  src/certs/demo-backend-client.key \
+-H "Authorization: Bearer ...token..." \
+--cert src/certs/demo-apim-client.crt \
+--key  src/certs/demo-apim-client.key \
 -H "Content-Type: application/json" \
 -d '{"message": "Good Morning!"}'
 {"message":"bob: Good Morning!","timestamp":1670624792172}
@@ -48,19 +57,27 @@ $ curl -ks -X POST https://localhost:8443/greetings?user=bob \
 ### DELETE /greetings?user={userid}
 Delete the greeting message of the specified user.
 
+Required scope: `greetings.set`
+
 Example:
 ```
 $ curl -ks -X DELETE https://localhost:8443/greetings?user=bob \
---cert src/certs/demo-backend-client.crt \
---key  src/certs/demo-backend-client.key
+-H "Authorization: Bearer ...token..." \
+--cert src/certs/demo-apim-client.crt \
+--key  src/certs/demo-apim-client.key
 ```
 
 ## Security
 
-This version enforces mutual TLS.
-To access the service, a client certificate issued by `src/certs/demo-sub-ca.crt` is required.
+* enforced mutual TLS
+* checks issuer of client certificate (must be signed by `src/certs/demo-sub-ca.crt`)
+* checks CN of client certificate (must be `apim-client`)
+* secured with OAuth 2
+    * user authenticated by token
+    * token validated by introspection to Authorization Server
+    * specified user must match `sub` claim
+    * scopes `greetings` or `greetings.set` required.
 
-__ATTENTION:__ The access to the user specific messages is not restricted.
 
 ## Certificates
 
