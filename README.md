@@ -78,6 +78,9 @@ $ curl -ks -X DELETE https://localhost:8443/greetings?user=bob \
     * specified user must match `sub` claim
     * scopes `greetings` or `greetings.set` required.
 
+![Security](docs/images/simple-greeting-service-security.png)
+
+Check the [guide](docs/secure-with-apim.md) for how to virtualize and the secure the API with the API Manager.
 
 ## Certificates
 
